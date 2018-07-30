@@ -14,6 +14,7 @@ import java.util.List;
 public class BtAndroid {
 
     private BluetoothAdapter mBluetoothAdapter;
+    private List<ScanResult> mScanResults;
 
     public BtAndroid(BluetoothAdapter mBluetoothAdapter) {
         this.mBluetoothAdapter = mBluetoothAdapter;
@@ -34,14 +35,15 @@ public class BtAndroid {
             ScanRecord scanRecord = result.getScanRecord();
             String deviceAddress = bluetoothDevice.getAddress();
             int rssi = result.getRssi();
-
+            if(!mScanResults.contains(result)){
+                mScanResults.add(result);
+            }
         }
 
         @Override
         public void onBatchScanResults(List<ScanResult> results) {
             super.onBatchScanResults(results);
             Log.i("results", results.toString());
-
         }
 
         @Override
@@ -51,7 +53,7 @@ public class BtAndroid {
         }
     };
 
-    public void scanLeDevice(final boolean enable) {
+    private void scanLeDevice(final boolean enable) {
 
         final BluetoothLeScanner bluetoothLeScanner = mBluetoothAdapter.getBluetoothLeScanner();
 
@@ -76,6 +78,11 @@ public class BtAndroid {
 
     public void scan(){
         scanLeDevice(enable);
+
+    }
+
+    public List<ScanResult> getResults(){
+        return mScanResults;
     }
 
 }
