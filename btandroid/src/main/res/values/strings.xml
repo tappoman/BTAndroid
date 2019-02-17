@@ -1,3 +1,20 @@
 <resources>
-    <string name="app_name">BTandroid</string>
+    <string name="app_name">Proto</string>
+
+    <string name="scanButton">Scan</string>
+    <string name="scanResultsFound">Results</string>
+    <string name="scanNoResultsFound">No devices found</string>
+    <string name="scanScanning">Scanning</string>
+    <string name="connect">connect</string>
+
+    <string name="device_name">device mac</string>
+    <string name="service_name">Service name</string>
+    <string name="characteristic_name">Characteristic name</string>
+    <string name="characteristic_properties">properties:</string>
+    <string name="characteristic_value">value:</string>
+    <string name="characteristic_descriptors">descriptors</string>
+    <string name="characteristic_descriptor_name">descriptor name</string>
+    <string name="characteristic_descriptor_value">value:</string>
+    <string name="UUID">UUID:</string>
+
 </resources>
