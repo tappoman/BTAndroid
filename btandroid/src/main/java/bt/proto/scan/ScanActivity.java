@@ -1,17 +1,10 @@
 package bt.proto.scan;
 
-import android.content.BroadcastReceiver;
-import android.content.ComponentName;
-import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
-import android.content.ServiceConnection;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
-import android.os.IBinder;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -107,6 +100,8 @@ public class ScanActivity extends AppCompatActivity implements scanInterface {
                     results.startAnimation(anim);
 
                     connectButton = findViewById(R.id.connect);
+                    connectButton.setClickable(false);
+                    connectButton.setAlpha(0.5f);
                     connectButton.setOnClickListener(new View.OnClickListener() {
 
                         @Override
@@ -186,6 +181,8 @@ public class ScanActivity extends AppCompatActivity implements scanInterface {
                     public void run() {
                         results.clearAnimation();
                          results.setText(getString(R.string.scanNoResultsFound));
+                         connectButton.setClickable(false);
+                         connectButton.setAlpha(0.5f);
                         //ErrorDialogue();
                     }
                 });
@@ -200,6 +197,8 @@ public class ScanActivity extends AppCompatActivity implements scanInterface {
                     public void run() {
                         results.clearAnimation();
                         results.setText(getString(R.string.scanResultsFound));
+                        connectButton.setClickable(true);
+                        connectButton.setAlpha(1);
                     }
                 });
             }
@@ -227,14 +226,12 @@ public class ScanActivity extends AppCompatActivity implements scanInterface {
 
     @Override
     public void chooseScanResultAt(int position) {
-
         //scanEntries.remove(position);
         //adapter.notifyItemRemoved(position);
     }
 
     @Override
     public void forgetScanResultAt(int position) {
-
     }
 
     private class scanAdapter extends RecyclerView.Adapter<scanAdapter.scanViewHolder>{
@@ -244,7 +241,7 @@ public class ScanActivity extends AppCompatActivity implements scanInterface {
         @Override
         public scanViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
 
-            View v = layoutInflater.inflate(R.layout.layout_scan_result, parent, false);
+            View v = layoutInflater.inflate(R.layout.layout_scan_root, parent, false);
             return new scanViewHolder(v);
         }
 
@@ -346,10 +343,6 @@ public class ScanActivity extends AppCompatActivity implements scanInterface {
 
 
     }
-
-
-
-
 
 
 }

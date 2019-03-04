@@ -21,7 +21,7 @@ public class scanController {
     private scanInterface view;
     List<scanEntry> scanEntries = new ArrayList<>();
     private boolean mScanning = true;
-    private int SCAN_PERIOD = 15000;
+    private int SCAN_PERIOD = 5000;
 
     private BluetoothAdapter mBluetoothAdapter  = BluetoothAdapter.getDefaultAdapter();
     private BluetoothLeScanner mBluetoothLeScanner = mBluetoothAdapter.getBluetoothLeScanner();

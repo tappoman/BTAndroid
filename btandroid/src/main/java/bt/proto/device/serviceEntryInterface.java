@@ -4,7 +4,6 @@ import java.util.List;
 
 public interface serviceEntryInterface {
 
-    void setUpAdapterAndView(List<serviceEntry> serviceEntries);
+    void setUpServiceAdapterAndView(List<serviceEntry> serviceEntries);
 
-    void chooseScanResultAt(int position);
 }

@@ -39,6 +39,9 @@ public class GattService extends Service {
     private static String MAC=null;
     private EntryDatabase entryDatabase;
 
+    List<BluetoothGattService> services;
+    List<BluetoothGattCharacteristic> characteristics;
+
     BluetoothAdapter mBluetoothAdapter;
     BluetoothDevice mBluetoothDevice;
     BluetoothGatt mGatt;
@@ -47,6 +50,7 @@ public class GattService extends Service {
 
     private Handler reconnectHandler = new Handler();
 
+    /*
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         super.onStartCommand(intent, flags, startId);
@@ -80,21 +84,47 @@ public class GattService extends Service {
         return START_NOT_STICKY;
 
     }
+    */
 
 
     @Override
     public IBinder onBind(Intent intent) {
 
-        Log.i(TAG,"On Bind");
+        if (intent != null) {
+
+            try {
+                Bundle bundle = intent.getExtras();
+                MAC = bundle.getString("MAC");
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+            Log.i(TAG, "received mac: " + MAC);
+
+            final BluetoothManager bluetoothManager =
+                    (BluetoothManager) getSystemService(Context.BLUETOOTH_SERVICE);
+            try {
+                mBluetoothAdapter = bluetoothManager.getAdapter();
+                if (!MAC.isEmpty()) {
+                    connectToDevice(MAC);
+                } else {
+                    stopSelf();
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
+        Log.i(TAG, "On Bind");
         return mBinder;
     }
 
-    public void listServices(List<BluetoothGattService> services){
+    public void servicesDiscovered(){
 
-        Intent intent = new Intent("Gatt Services");
-        for(int i=0 ; i<services.size() ; i++);{
-            //intent.putExtra("service", services.get(i));
-        }
+        Log.i(TAG, "servicesDiscovered");
+
+        Intent intent = new Intent("GattMessage");
+        intent.putExtra("packetContents","servicesDiscovered");
         LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
 
     }
@@ -103,6 +133,7 @@ public class GattService extends Service {
     public void sendResults(String value, String MAC) {
 
         Intent intent = new Intent("Gatt");
+        intent.putExtra("packetContents","value");
         //Log.i(TAG,"value "+value);
 
         Long ts = System.currentTimeMillis() / 1000;
@@ -125,6 +156,8 @@ public class GattService extends Service {
     public void sendACK(String MAC, String state) {
 
         Intent intent = new Intent("GattMessage");
+        intent.putExtra("packetContents","ACK");
+
         intent.putExtra("name", MAC);
         intent.putExtra("state", state);
         LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
@@ -165,6 +198,32 @@ public class GattService extends Service {
         //Log.d(TAG, "Gatt " + MAC + " Destroyed");
         //Log.d(TAG, "Gattservice Destroyed");
 
+    }
+
+    public List<BluetoothGattService> getServices(){
+        return services;
+    }
+
+    public List<BluetoothGattCharacteristic> getCharacteristics(String uuid){
+
+        for(int i=0; i < services.size(); i++){
+            Log.i(TAG,services.get(i).getUuid().toString());
+            if(services.get(i).getUuid().toString().equals(uuid)){
+                return services.get(i).getCharacteristics();
+            }
+        }
+        return null;
+    }
+
+    public List<BluetoothGattDescriptor> getDescriptors(String uuid){
+
+        for(int i=0; i < characteristics.size(); i++){
+            Log.i(TAG,characteristics.get(i).getUuid().toString());
+            if(characteristics.get(i).getUuid().toString().equals(uuid)){
+                return characteristics.get(i).getDescriptors();
+            }
+        }
+        return null;
     }
 
 
@@ -272,13 +331,13 @@ public class GattService extends Service {
         @Override
         public void onServicesDiscovered(BluetoothGatt gatt, int status) {
 
-            //Log.i(TAG,"on Services Discovered");
-
+            Log.i(TAG,"on Services Discovered");
 
             mGatt = gatt;
-            List<BluetoothGattService> services = gatt.getServices();
+            services = gatt.getServices();
+            servicesDiscovered();
 
-            setNotifySensor(gatt);
+            //setNotifySensor(gatt);
         }
 
         /*
@@ -354,6 +413,7 @@ public class GattService extends Service {
             gatt.writeDescriptor(desc);
             activateNormalfeed();
         }
+
 
     };
 

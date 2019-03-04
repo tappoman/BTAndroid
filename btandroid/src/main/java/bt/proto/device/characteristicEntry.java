@@ -1,14 +1,11 @@
 package bt.proto.device;
 
-import android.support.v7.widget.RecyclerView;
-
-public class serviceEntry {
+public class characteristicEntry {
 
     private String name;
     private String uuid;
-    private RecyclerView recyclerView;
 
-    public serviceEntry(String name, String uuid) {
+    public characteristicEntry(String name, String uuid) {
         this.name = name;
         this.uuid = uuid;
     }
@@ -29,4 +26,6 @@ public class serviceEntry {
         this.uuid = uuid;
     }
 
+
 }
+
